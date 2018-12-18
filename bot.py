@@ -28,20 +28,18 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 logger = logging.getLogger(__name__)
 
+def get_miaus(filename):
+    with open(filename) as word_file:
+        return list(set(word.strip() for word in word_file))
 
-miaus = [
-"Y Jovial nunca fue usado para publicar un artículo",
-"Miau, los quiero mucho",
-"@sirspock deja a la gente de CSRG, crece wn, crece, wn. Miau",
-"@maray se fue pa'l elo, yo me quedé en csrg, al medio hay un ambismo, sin comida ni luz, ay ay ay de mí"
-]
+def random_miau():
+    return random.choice(miaus)
 
 # Define a few command handlers. These usually take the two arguments bot and
 # update. Error handlers also receive the raised TelegramError object in error.
 def start(bot, update):
     """Send a message when the command /start is issued."""
-    msg = random.choice(miaus)
-    update.message.reply_text(msg)
+    update.message.reply_text(random_miau())
 
 
 def help(bot, update):
@@ -65,7 +63,6 @@ def main():
     PORT = 8443
     assert (TOKEN), "variable token has not been set."
 
-    # Create the EventHandler and pass it your bot's token.
     updater = Updater(TOKEN)
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
@@ -93,4 +90,7 @@ def main():
 
 
 if __name__ == '__main__':
+    miausfile = os.environ.get('FILE')
+    assert (miausfile), "file has not been set."
+    miaus = get_miaus(miausfile)
     main()
